@@ -22,6 +22,18 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.MapGet("/api/users/{id:int}/score", async (int id, ApplicationContext db) =>
+{
+    // получаем пользовател€ по id
+    User? user = await db.Users.FirstOrDefaultAsync(u => u.Id == id);
+
+    // если не найден, отправл€ем статусный код и сообщение об ошибке
+    if (user == null) return Results.NotFound(new { message = "ѕользователь не найден" });
+
+    // если пользователь найден, отправл€ем его
+    return Results.Json(user.Score);
+});
+
 //app.UseHttpsRedirection();
 app.UseStaticFiles();
 
